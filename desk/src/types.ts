@@ -759,5 +759,6 @@ declare global {
     time_format: string;
     session_user: string;
     timezone: Record<"user" | "system", string>;
+    agent: string | null;
   }
 }
