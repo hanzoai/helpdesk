@@ -353,7 +353,6 @@ export interface EmailAccount {
   validate_ssl_certificate_for_outgoing: boolean;
 }
 
-
 export type EmailAccountFormState = {
   email_account_name?: string;
   email_id?: string;
@@ -704,6 +703,19 @@ export interface SavedReply {
   scope: string;
   teams: Team[];
   owner: string;
+}
+
+export type APIOptions = DropdownOption[] | string[] | [];
+
+export type DropdownOption = {
+  label: string;
+  value: string | number;
+};
+
+export interface AgentOption {
+  value: string;
+  label: string;
+  image?: string;
 }
 
 // symbols
