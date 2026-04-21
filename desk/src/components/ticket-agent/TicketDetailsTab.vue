@@ -65,8 +65,8 @@
               class="flex gap-2.5 items-center justify-between sticky top-0 bg-surface-white z-10 px-5 py-4 cursor-pointer"
               @click="toggle"
             >
-              <span class="text-ink-gray-8 font-medium text-base select-none">
-                Ticket Info
+              <span class="text-ink-gray-8 font-semibold text-base select-none">
+                {{ __("Ticket Info") }}
               </span>
               <LucideChevronRight
                 class="size-4 text-ink-gray-6"
@@ -75,7 +75,7 @@
             </div>
           </template>
           <div
-            class="space-y-1.5 px-5 last:mb-3"
+            class="space-y-1.5 px-5 last:mb-4"
             v-if="Boolean(customFields.length)"
           >
             <template v-for="field in customFields">
@@ -94,7 +94,7 @@
       </div>
 
       <!-- Recent / Similar Tickets -->
-      <template v-if="!recentSimilarTickets.loading">
+      <template v-if="showRecentSimilarTickets">
         <div v-for="section in sections" :key="section.label">
           <Section
             :label="section.label"
@@ -108,9 +108,9 @@
               >
                 <Tooltip :text="section.tooltipMessage">
                   <span
-                    class="text-ink-gray-8 font-medium text-base select-none"
+                    class="text-ink-gray-8 font-semibold text-base select-none"
                   >
-                    {{ section.label }}
+                    {{ __(section.label) }}
                   </span>
                 </Tooltip>
                 <LucideChevronRight
@@ -131,14 +131,14 @@
                 </p>
                 <div class="flex items-end justify-between">
                   <p class="text-base text-ink-gray-5">
-                    {{ formatDate(t.creation) + " · " }}
+                    {{ formatDate(t.creation as string) + " · " }}
                     <span class="transition duration-400 hover:underline">
                       {{ "#" + t.name }}
                     </span>
                   </p>
                   <p
                     class="px-1.5 py-[3px] text-sm rounded-sm max-w-[80px] text-center truncate h-5"
-                    :class="getStatusColor(t.status)"
+                    :class="getStatusColor(t.status as string)"
                   >
                     {{ t.status }}
                   </p>
@@ -287,7 +287,7 @@ function formatDate(date: string) {
   return dayjs(date).format(dateFormat.toUpperCase());
 }
 
-function openTicket(name: string) {
+function openTicket(name: string | number) {
   let url = window.location.origin + "/helpdesk/tickets/" + name;
   window.open(url, "_blank");
 }
@@ -347,6 +347,14 @@ const setFieldRef = (fieldname: string, el: any) => {
     fieldRefs.value[fieldname] = el;
   }
 };
+
+const showRecentSimilarTickets = computed(() => {
+  return (
+    !recentSimilarTickets.value.loading &&
+    (recentSimilarTickets.value?.data?.recent_tickets?.length ||
+      recentSimilarTickets.value?.data?.similar_tickets?.length)
+  );
+});
 
 useShortcut("t", () => {
   fieldRefs.value?.ticket_type?.$el?.querySelector("button")?.click();
