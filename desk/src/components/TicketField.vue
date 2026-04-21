@@ -112,8 +112,12 @@ const component = computed(() => {
     });
   } else if (textFields.includes(props.field.fieldtype)) {
     return h(FormControl, {
+<<<<<<< HEAD
       type: "textarea",
       rows: props.field.fieldtype === "Data" ? 1 : 2,
+=======
+      type: "text",
+>>>>>>> 1c184f83 (fix: icon width)
     });
   } else if (props.field.fieldtype === "Datetime") {
     return h(DateTimePicker, {
