@@ -46,7 +46,12 @@
         >
           <Badge
             :label="firstResponse.label"
+<<<<<<< HEAD
             variant="subtle"
+=======
+            variant="ghost"
+            class="mt-[1px]"
+>>>>>>> 3cdad35a (fix: hover state)
             :theme="firstResponse.color"
           />
         </Tooltip>
@@ -64,11 +69,14 @@
           <Badge
             v-if="resolutionBy"
             :label="resolutionBy.label"
+<<<<<<< HEAD
             variant="subtle"
+=======
+            variant="ghost"
+            class="mt-[1px]"
+>>>>>>> 3cdad35a (fix: hover state)
             :theme="resolutionBy.color !== 'purple' && resolutionBy.color"
-            :class="
-              resolutionBy.color === 'purple' && '!text-[#6B46C1] !bg-[#F3E8FF]'
-            "
+            :class="resolutionBy.color === 'purple' && '!text-[#6B46C1] '"
           />
         </Tooltip>
       </div>
