@@ -1,6 +1,6 @@
 <template>
   <div class="flex h-full flex-col">
-    <div class="shrink-0 px-5 pb-4 flex flex-col">
+    <div class="shrink-0 px-4 pb-4 flex flex-col">
       <!-- User avatar with buttons -->
       <TicketContact />
       <!-- Core Fields -->
@@ -65,7 +65,7 @@
         <Section label="Ticket Info" :opened="true">
           <template #header="{ opened, toggle }">
             <div
-              class="flex gap-2.5 items-center justify-between sticky top-0 bg-surface-white z-10 px-5 py-4 cursor-pointer"
+              class="flex gap-2.5 items-center justify-between sticky top-0 bg-surface-white z-10 px-4 py-4 cursor-pointer"
               @click="toggle"
             >
               <span class="text-ink-gray-8 font-semibold text-base select-none">
@@ -78,7 +78,7 @@
             </div>
           </template>
           <div
-            class="space-y-1.5 px-5 last:mb-2"
+            class="space-y-1.5 px-4 last:mb-2"
             v-if="Boolean(customFields.length)"
           >
             <template v-for="field in customFields">
@@ -106,7 +106,7 @@
           >
             <template #header="{ opened, toggle }">
               <div
-                class="flex gap-2.5 items-center justify-between sticky top-0 bg-surface-white z-10 px-5 py-4 cursor-pointer"
+                class="flex gap-2.5 items-center justify-between sticky top-0 bg-surface-white z-10 px-4 py-4 cursor-pointer"
                 @click="toggle"
               >
                 <Tooltip :text="section.tooltipMessage">
