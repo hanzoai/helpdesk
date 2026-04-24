@@ -183,6 +183,10 @@ const htmlContent = computed(
       .email-content :where(blockquote p:last-of-type):not(:where([class~='not-prose'], [class~='not-prose'] *))::after {
         content: none;
       }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 91c175fc (feat: email signature (#3188))
     </style>
   </head>
   <body>
