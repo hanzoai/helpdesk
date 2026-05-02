@@ -254,8 +254,13 @@ class HDTicket(Document):
 
     def set_raised_by(self):
 <<<<<<< HEAD
+<<<<<<< HEAD
         self.raised_by = self.raised_by or frappe.session.user
 =======
+=======
+        if self.raised_by:
+            return
+>>>>>>> 1aef41eb (fix: dont change raised by if exists)
         self.raised_by = frappe.session.user
 >>>>>>> c673db3e (fix: dont always set default type)
 
