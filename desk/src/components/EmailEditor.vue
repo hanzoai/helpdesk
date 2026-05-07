@@ -2,7 +2,7 @@
   <TextEditor
     ref="editorRef"
     :editor-class="[
-      'prose-sm max-w-full mx-6 md:mx-10 py-3',
+      'prose-sm max-w-full mx-6 md:mx-5 py-3',
       getFontFamily(newEmail),
       '[&_p.reply-to-content]:hidden',
     ]"
@@ -16,7 +16,7 @@
     @keydown.capture="handleKeydown"
   >
     <template #top>
-      <div class="mx-6 md:mx-10 flex items-center gap-2 border-y py-2.5">
+      <div class="mx-6 md:mx-5 flex items-center gap-2 border-y py-2.5">
         <span class="text-xs text-gray-500">TO:</span>
         <MultiSelectInput
           v-model="toEmailsClone"
@@ -97,7 +97,7 @@
       </div>
       <!-- TextEditor Fixed Menu -->
       <div
-        class="flex justify-between overflow-scroll pl-10 py-2.5 items-center"
+        class="flex justify-between overflow-scroll px-5 py-2.5 items-center border-t"
       >
         <div class="flex items-center overflow-x-auto w-[60%]">
           <div class="flex gap-1">
@@ -140,9 +140,7 @@
           </div>
           <TextEditorFixedMenu class="ml-1" :buttons="textEditorMenuButtons" />
         </div>
-        <div
-          class="flex items-center justify-end space-x-2 sm:mt-0 w-[40%] mr-9"
-        >
+        <div class="flex items-center justify-end space-x-2 sm:mt-0 w-[40%]">
           <Button label="Discard" @click="handleDiscard" />
           <Button
             variant="solid"
@@ -174,7 +172,6 @@ import {
   MultiSelectInput,
   SavedRepliesSelectorModal,
 } from "@/components";
-import { EditorContent } from "@tiptap/vue-3";
 import { AttachmentIcon } from "@/components/icons";
 import { useTyping } from "@/composables/realtime";
 import { useAuthStore } from "@/stores/auth";
@@ -191,6 +188,7 @@ import {
   uploadFunction,
   validateEmailWithZod,
 } from "@/utils";
+import { EditorContent } from "@tiptap/vue-3";
 import { useStorage } from "@vueuse/core";
 import {
   FileUploader,

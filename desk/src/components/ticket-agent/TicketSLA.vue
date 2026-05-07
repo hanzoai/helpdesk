@@ -20,17 +20,17 @@
         <!-- Via Email -->
         <div
           v-if="!ticket.doc.via_customer_portal"
-          class="text-ink-gray-4 flex items-center"
+          class="text-ink-gray-5 flex items-center"
         >
-          <span class="text-ink-gray-4 mr-[6px]">via</span>
+          <span class="mr-[4px]">via</span>
           <EmailIcon class="size-4 inline-block mr-1" />
-          <span class="">Email</span>
+          <span>Email</span>
         </div>
         <!-- Via Portal -->
-        <div v-else class="text-ink-gray-4 flex items-center">
-          <span class="text-ink-gray-4 mr-[6px]">via</span>
+        <div v-else class="text-ink-gray-5 flex items-center">
+          <span class="mr-[4px]">via</span>
           <GlobeIcon class="size-4 inline-block mr-1" />
-          <span class="font-medium">Portal</span>
+          <span>Portal</span>
         </div>
       </div>
       <!-- divider -->
@@ -85,7 +85,7 @@ import {
   dateTooltipFormat,
   formatTime,
 } from "@/utils";
-import { Badge, dayjs, Tooltip, dayjsLocal } from "frappe-ui";
+import { Badge, dayjs, Tooltip } from "frappe-ui";
 import { computed, inject } from "vue";
 
 const ticket = inject(TicketSymbol);

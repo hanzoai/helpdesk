@@ -11,10 +11,7 @@
           <span class="font-medium text-gray-800">
             {{ commenter }}
           </span>
-          <span> {{ __(" added a") }}</span>
-          <span class="max-w-xs truncate font-medium text-gray-800">
-            {{ __(" comment") }}
-          </span>
+          <span> {{ __(" commented") }}</span>
         </p>
       </div>
       <div class="flex items-center gap-1">
@@ -40,10 +37,9 @@
     </div>
     <div
       :id="`comment-${name}`"
-      class="rounded bg-gray-50 transition-colors px-4 py-3"
+      class="rounded-md bg-surface-gray-1 transition-colors px-3 py-[6px] pt-1"
     >
       <TextEditor
-        ref="editorRef"
         :editor-class="[
           'prose-f shrink text-p-sm transition-all duration-300 ease-in-out block w-full content',
           getFontFamily(_content),
@@ -93,7 +89,7 @@
         <Popover>
           <template #target="{ togglePopover }">
             <button
-              class="flex h-full items-center justify-center rounded-full bg-surface-gray-2 px-2 py-1 text-ink-gray-6 transition hover:bg-surface-gray-3"
+              class="flex h-full items-center justify-center rounded-full bg-surface-gray-2 px-1 py-1 text-ink-gray-6 transition hover:bg-surface-gray-3"
               @click="togglePopover()"
             >
               <ReactionIcon class="w-4 h-4" />
@@ -152,16 +148,17 @@
 <script setup lang="ts">
 import { AttachmentItem } from "@/components";
 import ReactionIcon from "@/components/icons/ReactionIcon.vue";
+import { useDevice } from "@/composables";
+import { useScreenSize } from "@/composables/screen";
 import { useAgentStore } from "@/stores/agent";
 import { useAuthStore } from "@/stores/auth";
 import { useConfigStore } from "@/stores/config";
 import { updateRes as updateComment } from "@/stores/knowledgeBase";
 import { useUserStore } from "@/stores/user";
+import { __ } from "@/translation";
 import { CommentActivity } from "@/types";
-import { ConfirmDelete } from "@/utils";
-import { useDevice } from "@/composables";
-import { useScreenSize } from "@/composables/screen";
 import {
+  ConfirmDelete,
   dateFormat,
   dateTooltipFormat,
   getFontFamily,
@@ -179,7 +176,6 @@ import {
   toast,
 } from "frappe-ui";
 import { PropType, computed, onMounted, ref } from "vue";
-import { __ } from "@/translation";
 
 const authStore = useAuthStore();
 const props = defineProps({
@@ -288,14 +284,12 @@ function handleReaction(emoji: string) {
 }
 
 const commentBoxRef = ref(null);
-const editorRef = ref(null);
 const lastSavedContent = ref(content);
 const commentBoxState = ref(content);
 
 function handleEditMode() {
   editable.value = true;
   commentBoxState.value = _content.value;
-  editorRef.value?.editor.chain().focus("end").run();
 }
 
 function handleDiscard() {
