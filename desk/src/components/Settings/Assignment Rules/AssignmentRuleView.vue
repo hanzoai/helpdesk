@@ -12,13 +12,14 @@
           @click="goBack()"
           class="cursor-pointer -ml-4 hover:bg-transparent focus:bg-transparent focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:none active:bg-transparent active:outline-none active:ring-0 active:ring-offset-0 active:text-ink-gray-5 font-semibold text-lg hover:opacity-70 !pr-0 !max-w-96 !justify-start"
         />
-        <Badge
-          variant="subtle"
-          theme="orange"
-          size="sm"
-          :label="__('Unsaved')"
-          v-if="isDirty"
-        />
+        <Transition name="fade">
+          <Badge
+            variant="subtle"
+            theme="orange"
+            size="sm"
+            :label="__('Unsaved')"
+            v-if="isDirty"
+        /></Transition>
       </div>
     </template>
     <template #header-actions>
@@ -134,7 +135,7 @@
         <div>
           <div class="flex flex-col gap-1">
             <span class="text-lg font-semibold text-ink-gray-8">{{
-              __("Assignment condition")
+              __("Assignment Condition")
             }}</span>
             <div class="flex items-center justify-between gap-6">
               <span class="text-p-sm text-ink-gray-6">
@@ -211,7 +212,7 @@
         <div>
           <div class="flex flex-col gap-1">
             <span class="text-lg font-semibold text-ink-gray-8">{{
-              __("Unassignment condition")
+              __("Unassignment Condition")
             }}</span>
             <div class="flex items-center justify-between gap-6">
               <span class="text-p-sm text-ink-gray-6">
@@ -557,7 +558,7 @@ const createAssignmentRule = () => {
 const createAssignmentRuleResource = createResource({
   url: "frappe.client.insert",
   onSuccess(data) {
-    toast.success(__("Assignment rule created"));
+    toast.success(__("Assignment rule created successfully."));
     assignmentRulesActiveScreen.value = {
       screen: "view",
       data: data,
@@ -644,7 +645,7 @@ const updateAssignmentRule = async () => {
   }
 
   isLoading.value = false;
-  toast.success(__("Assignment rule updated"));
+  toast.success(__("Assignment rule updated successfully."));
 };
 
 watch(

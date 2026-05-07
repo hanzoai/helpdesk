@@ -1,3 +1,4 @@
+import { __ } from "@/translation";
 import type {
   DocumentResource,
   RecentSimilarTicket,
@@ -31,7 +32,7 @@ export const useTicket = (ticketId: string): MapValue => {
         },
         setValue: {
           onSuccess: () => {
-            toast.success(__("Ticket updated"));
+            toast.success(__("Ticket updated sucessfully."));
             err = false;
           },
           onError: (error) => {
