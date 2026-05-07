@@ -326,13 +326,27 @@ const isEmpty = computed(() => {
   );
 });
 
+const parseFilters = (filters: Filters) => {
+  return {
+    from_date: filters.period.split(",")[0],
+    to_date: filters.period.split(",")[1],
+    team: filters.team,
+    agent: filters.agent,
+  };
+};
+
 const numberCards = createResource({
   url: "helpdesk.api.dashboard.get_dashboard_data",
   cache: ["Analytics", "NumberCards"],
   params: {
     dashboard_type: "number_card",
+<<<<<<< HEAD
     filters,
   },
+=======
+    filters: parseFilters(filters),
+  }),
+>>>>>>> a73870f2 (fix: parse period filter)
 });
 
 const masterData = createResource({
@@ -340,8 +354,13 @@ const masterData = createResource({
   cache: ["Analytics", "MasterCharts"],
   params: {
     dashboard_type: "master",
+<<<<<<< HEAD
     filters,
   },
+=======
+    filters: parseFilters(filters),
+  }),
+>>>>>>> a73870f2 (fix: parse period filter)
 });
 
 const trendData = createResource({
@@ -349,8 +368,13 @@ const trendData = createResource({
   cache: ["Analytics", "TrendCharts"],
   params: {
     dashboard_type: "trend",
+<<<<<<< HEAD
     filters,
   },
+=======
+    filters: parseFilters(filters),
+  }),
+>>>>>>> a73870f2 (fix: parse period filter)
 });
 
 const agentFilter = ref(null);
