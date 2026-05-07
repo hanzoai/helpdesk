@@ -11,6 +11,7 @@
   "user",
   "is_default",
   "is_customer_portal",
+  "is_standard",
   "column_break_zacm",
   "type",
   "dt",
@@ -150,6 +151,12 @@
    "fieldname": "is_customer_portal",
    "fieldtype": "Check",
    "label": "Is Customer Portal"
+},
+  {
+   "default": "0",
+   "fieldname": "is_standard",
+   "fieldtype": "Check",
+   "label": "Is Standard"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -158,7 +165,7 @@
  "modified_by": "Administrator",
  "module": "Helpdesk",
  "name": "HD View",
- "naming_rule": "Expression",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
@@ -223,6 +230,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": []
