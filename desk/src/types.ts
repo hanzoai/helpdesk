@@ -650,12 +650,6 @@ export interface TicketActivities {
   views: ViewLog[];
 }
 
-export type APIOptions = DropdownOption[] | string[] | [];
-
-export type DropdownOption = {
-  label: string;
-  value: string | number;
-};
 
 export interface HDSettings {
   brandName: string;
