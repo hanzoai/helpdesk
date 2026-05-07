@@ -84,6 +84,7 @@ const {
   findView,
   updateView,
   deleteView,
+  standardViews,
 } = useView("HD Ticket");
 
 const activeView = computed(() => findView(route.query.view as string).value);
@@ -329,12 +330,20 @@ const dropdownOptions = computed(() => {
       items: parseViews(pinnedViews.value),
     });
   }
-  if (publicViews.value?.length !== 0) {
-    items.push({
-      group: __("Public Views"),
-      items: parseViews(publicViews.value),
-    });
-  }
+
+  const allPublicViews = [
+    ...(standardViews.value || []),
+    ...(publicViews.value || []),
+  ];
+
+  const uniquePublicViews = Array.from(
+    new Map(allPublicViews.map((v) => [v.name, v])).values()
+  );
+
+  items.push({
+    group: __("Public Views"),
+    items: parseViews(uniquePublicViews),
+  });
 
   items.push({
     group: __("Create View"),
@@ -439,11 +448,13 @@ const viewActions = (view) => {
       });
     }
     if (!_view.is_standard) {
-      if (isManager && !isCustomerPortal.value) {
+      if (_view?.is_standard && isManager) {
         actions[0].items.push({
-          label: _view?.public ? __("Make Private") : __("Make Public"),
+          label: _view?.public
+            ? __("Hide from sidebar")
+            : __("Show in sidebar"),
           icon: h(FeatherIcon, {
-            name: _view?.public ? "lock" : "unlock",
+            name: _view?.public ? "eye-off" : "eye",
             class: "h-4 w-4",
           }),
           onClick: () => {
