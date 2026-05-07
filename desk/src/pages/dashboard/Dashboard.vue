@@ -97,7 +97,7 @@
         >
           <NumberChart
             :key="index"
-            class="border rounded-md"
+            class="border rounded-md min-h-[114px]"
             :config="config"
           />
         </Tooltip>
@@ -225,6 +225,18 @@ interface NumberCardData {
   tooltip: string;
 }
 
+type Filters = {
+  period: string;
+  agent: null | string;
+  team: null | string;
+};
+
+const filters = reactive<Filters>({
+  period: getLastXDays(),
+  agent: null,
+  team: null,
+});
+
 interface ChartData {
   data: ChartValues[];
   title: string;
@@ -303,12 +315,6 @@ const tabButtons = computed(() => {
   ];
 });
 
-const filters = reactive({
-  period: getLastXDays(),
-  agent: null,
-  team: null,
-});
-
 const hasAppliedFilter = computed(() => {
   return (
     filters.agent ||
@@ -338,43 +344,27 @@ const parseFilters = (filters: Filters) => {
 const numberCards = createResource({
   url: "helpdesk.api.dashboard.get_dashboard_data",
   cache: ["Analytics", "NumberCards"],
-  params: {
+  makeParams: () => ({
     dashboard_type: "number_card",
-<<<<<<< HEAD
-    filters,
-  },
-=======
     filters: parseFilters(filters),
   }),
->>>>>>> a73870f2 (fix: parse period filter)
+  }),
 });
 
 const masterData = createResource({
   url: "helpdesk.api.dashboard.get_dashboard_data",
   cache: ["Analytics", "MasterCharts"],
-  params: {
-    dashboard_type: "master",
-<<<<<<< HEAD
-    filters,
-  },
-=======
     filters: parseFilters(filters),
   }),
->>>>>>> a73870f2 (fix: parse period filter)
+  makeParams: () => ({ dashboard_type: "master", filters }),
 });
 
 const trendData = createResource({
   url: "helpdesk.api.dashboard.get_dashboard_data",
   cache: ["Analytics", "TrendCharts"],
-  params: {
-    dashboard_type: "trend",
-<<<<<<< HEAD
-    filters,
-  },
-=======
     filters: parseFilters(filters),
   }),
->>>>>>> a73870f2 (fix: parse period filter)
+  makeParams: () => ({ dashboard_type: "trend", filters }),
 });
 
 const agentFilter = ref(null);
