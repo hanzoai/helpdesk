@@ -1,13 +1,6 @@
 import type { DropdownOption } from "@/types";
-import { useClipboard, useDateFormat } from "@vueuse/core";
-import {
-  FeatherIcon,
-  call,
-  dayjsLocal,
-  toast,
-  useFileUpload,
-  getConfig,
-} from "frappe-ui";
+import { useClipboard } from "@vueuse/core";
+import { FeatherIcon, call, dayjsLocal, toast, useFileUpload } from "frappe-ui";
 import { gemoji } from "gemoji";
 import { h, markRaw, ref } from "vue";
 import zod from "zod";
@@ -348,6 +341,13 @@ export function isContentEmpty(content: string) {
     return true;
   }
   return doc.body.textContent.trim() === "";
+}
+
+export function normalize(value: any) {
+  if (value === null || value === undefined) {
+    return '';
+  }
+  return value;
 }
 
 export function isTouchScreenDevice() {
@@ -786,4 +786,8 @@ export function buildPercentageChange(value: number | null) {
     value: value > 0 ? `+${value}` : value,
     color: value > 0 ? "text-red-600" : value < 0 ? "text-green-600" : "text-ink-gray-5",
   };
+}
+export function openContact(name: string) {
+  const url = window.location.origin + "/app/contact/" + name;
+  window.open(url, "_blank");
 }

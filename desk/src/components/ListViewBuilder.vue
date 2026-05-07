@@ -2,7 +2,7 @@
   <!-- View Controls -->
   <div
     :class="[
-      'flex items-center justify-between gap-2 px-5 pb-4 pt-3 pl-6',
+      'flex items-center justify-between gap-2 px-5 pb-4 pt-3 ',
       list?.data?.data?.length > 0 ? 'relative' : 'absolute w-[stretch]',
     ]"
     v-if="showViewControls"
@@ -51,7 +51,6 @@
         params: { [options.rowRoute?.prop]: row.name },
         query: { view: route.query?.view },
       }),
-      onRowClick: (row) => emit('rowClick', row.name),
       emptyState,
     }"
   >
@@ -163,7 +162,6 @@ import {
 import {
   computed,
   h,
-  nextTick,
   onMounted,
   provide,
   reactive,
@@ -326,9 +324,6 @@ const list = createResource({
   onSuccess: (data) => {
     list.params = defaultParams;
     columns.value = data.columns;
-    nextTick(() => {
-      document.querySelector(".list-rows")?.focus();
-    });
   },
 });
 
@@ -774,8 +769,3 @@ onMounted(async () => {
 
 defineExpose(exposeFunctions);
 </script>
-<style scoped>
-.list-rows:focus {
-  outline: none;
-}
-</style>
