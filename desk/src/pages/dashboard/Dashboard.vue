@@ -348,23 +348,24 @@ const numberCards = createResource({
     dashboard_type: "number_card",
     filters: parseFilters(filters),
   }),
-  }),
 });
 
 const masterData = createResource({
   url: "helpdesk.api.dashboard.get_dashboard_data",
   cache: ["Analytics", "MasterCharts"],
+  makeParams: () => ({
+    dashboard_type: "master",
     filters: parseFilters(filters),
   }),
-  makeParams: () => ({ dashboard_type: "master", filters }),
 });
 
 const trendData = createResource({
   url: "helpdesk.api.dashboard.get_dashboard_data",
   cache: ["Analytics", "TrendCharts"],
+  makeParams: () => ({
+    dashboard_type: "trend",
     filters: parseFilters(filters),
   }),
-  makeParams: () => ({ dashboard_type: "trend", filters }),
 });
 
 const agentFilter = ref(null);
