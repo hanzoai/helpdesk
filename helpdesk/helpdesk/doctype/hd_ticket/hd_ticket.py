@@ -1346,9 +1346,6 @@ def close_tickets_after_n_days():
         doc = frappe.get_doc("HD Ticket", ticket)
         doc.status = "Closed"
         doc.flags.ignore_validate = True
-<<<<<<< HEAD
-        doc.save(ignore_permissions=True)
-=======
         try:
             doc.save(ignore_permissions=True)
             # activity log for auto closing the ticket
@@ -1363,7 +1360,6 @@ def close_tickets_after_n_days():
             )
             continue
 
->>>>>>> 2c932936 (fix: add job for auto updating SLA status)
         frappe.db.commit()  # nosemgrep
 
 
