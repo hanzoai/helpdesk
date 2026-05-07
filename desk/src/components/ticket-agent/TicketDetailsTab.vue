@@ -38,23 +38,6 @@
       </div>
     </div>
 
-<<<<<<< HEAD
-    <!-- Additional Fields -->
-    <div
-      class="border-t flex-1 min-h-0 overflow-y-auto pb-3"
-      v-if="Boolean(customFields.length)"
-    >
-      <template v-for="field in customFields">
-        <TicketField
-          v-if="field.visible"
-          :key="field.fieldname"
-          :field="field"
-          :value="field.value"
-          @change="
-            ({ fieldname, value }) => handleFieldUpdate(fieldname, value)
-          "
-        />
-=======
     <!-- Scrollable sections: Ticket Info + Recent / Similar Tickets -->
     <div
       class="border-t flex-1 min-h-0 overflow-y-auto divide-y-[1px]"
@@ -151,7 +134,6 @@
             </ul>
           </Section>
         </div>
->>>>>>> 3b1bfdb0 (refactor: ticket side panel design)
       </template>
     </div>
   </div>
