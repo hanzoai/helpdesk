@@ -19,7 +19,6 @@ from pypika.functions import Count
 from pypika.queries import Query
 from pypika.terms import Criterion
 
-from helpdesk.consts import DEFAULT_TICKET_PRIORITY, DEFAULT_TICKET_TYPE
 from helpdesk.helpdesk.doctype.hd_settings.helpers import (
     get_default_email_content,
     is_email_content_empty,
@@ -249,12 +248,14 @@ class HDTicket(Document):
     def set_ticket_type(self):
         if self.ticket_type:
             return
-        settings = frappe.get_doc("HD Settings")
-        ticket_type = settings.default_ticket_type or DEFAULT_TICKET_TYPE
-        self.ticket_type = ticket_type
+        self.ticket_type = (
+            frappe.db.get_single_value("HD Settings", "default_ticket_type") or ""
+        )
 
     def set_raised_by(self):
-        self.raised_by = self.raised_by or frappe.session.user
+        if self.raised_by:
+            return
+        self.raised_by = frappe.session.user
 
     def set_contact(self):
         email_id = parseaddr(self.raised_by)[1]
