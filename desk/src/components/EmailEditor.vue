@@ -38,18 +38,6 @@
           :validate="validateEmailWithZod"
           :error-message="(value) => `${value} is an invalid email address`"
         />
-<<<<<<< HEAD
-        <Button
-          :label="'CC'"
-          :class="[cc ? 'bg-gray-300 hover:bg-gray-200' : '']"
-          @click="toggleCC()"
-        />
-        <Button
-          :label="'BCC'"
-          :class="[bcc ? 'bg-gray-300 hover:bg-gray-200' : '']"
-          @click="toggleBCC()"
-        />
-=======
         <div class="flex gap-1.5">
           <Button
             :label="__('Cc')"
@@ -72,7 +60,6 @@
             @click="toggleBCC()"
           />
         </div>
->>>>>>> 91c175fc (feat: email signature (#3188))
       </div>
       <div
         v-if="showCC || cc"
@@ -107,15 +94,6 @@
     <template #editor>
       <div class="overflow-y-auto min-h-[7rem] max-h-[30vh]">
         <EditorContent :editor="editor" />
-<<<<<<< HEAD
-        <div
-          v-if="quotedContent"
-          ref="quotedContentRef"
-          contenteditable="true"
-          class="prose !max-w-full mx-6 md:mx-10 my-2 border-l-4 border-gray-300 pl-4 text-sm focus:outline-none"
-          @input="onQuotedInput"
-        />
-=======
         <div v-if="quotedContent" class="replied-content mx-6 md:mx-5 mb-2">
           <label class="collapse" for="quoted-toggle">...</label>
           <input
@@ -131,7 +109,6 @@
             @input="onQuotedInput"
           />
         </div>
->>>>>>> 91c175fc (feat: email signature (#3188))
       </div>
     </template>
     <template #bottom>
