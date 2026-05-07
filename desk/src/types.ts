@@ -631,11 +631,11 @@ export interface TicketContact {
 }
 
 export type RecentTicket = Record<
-  "subject" | "status" | "priority" | "name",
+  "subject" | "status" | "priority" | "name" | "creation",
   string | number
 >;
 export type SimilarTicket = Record<
-  "subject" | "status" | "priority" | "name",
+  "subject" | "status" | "priority" | "name" | "creation",
   string | number
 >;
 export interface RecentSimilarTicket {
@@ -650,12 +650,6 @@ export interface TicketActivities {
   views: ViewLog[];
 }
 
-export type APIOptions = DropdownOption[] | string[] | [];
-
-export type DropdownOption = {
-  label: string;
-  value: string | number;
-};
 
 export interface HDSettings {
   brandName: string;
