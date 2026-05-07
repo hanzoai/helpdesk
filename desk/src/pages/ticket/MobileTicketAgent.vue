@@ -131,7 +131,7 @@
               () => {
                 ticket.reload();
                 tabIndex !== 0 &&
-                  ticketAgentActivitiesRef.scrollToLatestActivity();
+                  ticketAgentActivitiesRef?.scrollToLatestActivity();
               }
             "
           />
@@ -252,8 +252,12 @@ const ticketStatusStore = useTicketStatusStore();
 const { getUser } = useUserStore();
 
 const router = useRouter();
-const ticketAgentActivitiesRef = ref(null);
-const communicationAreaRef = ref(null);
+const ticketAgentActivitiesRef = ref<InstanceType<
+  typeof TicketAgentActivities
+> | null>(null);
+const communicationAreaRef = ref<InstanceType<typeof CommunicationArea> | null>(
+  null
+);
 const subjectInput = ref(null);
 const isLoading = ref(false);
 const showPhoneModal = ref(false);
@@ -495,7 +499,7 @@ function updateTicket(fieldname: string, value: string) {
     onSuccess: () => {
       isLoading.value = false;
       ticket.reload();
-      toast.success(__("Ticket updated"));
+      toast.success(__("Ticket updated succesfully."));
     },
   });
 }
@@ -507,3 +511,13 @@ onUnmounted(() => {
   document.title = "Helpdesk";
 });
 </script>
+<style scoped>
+:deep(.breadcrumb-item span),
+:deep(a span) {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  white-space: normal !important;
+}
+</style>

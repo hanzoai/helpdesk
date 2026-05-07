@@ -153,6 +153,10 @@ export interface Communication {
   sender: string;
   bcc?: string;
   cc?: string;
+  sent_or_received?: "Sent" | "Received";
+  email_account?: string;
+  sender_full_name?: string;
+  sender_mail_id?: string;
 }
 
 export interface Activity {
@@ -353,7 +357,6 @@ export interface EmailAccount {
   validate_ssl_certificate_for_outgoing: boolean;
 }
 
-
 export type EmailAccountFormState = {
   email_account_name?: string;
   email_id?: string;
@@ -443,6 +446,7 @@ export interface View {
   group_by_field?: string;
   name?: string;
   is_customer_portal?: boolean;
+  is_standard?: boolean;
 }
 
 export interface ViewType {
@@ -631,11 +635,11 @@ export interface TicketContact {
 }
 
 export type RecentTicket = Record<
-  "subject" | "status" | "priority" | "name",
+  "subject" | "status" | "priority" | "name" | "creation",
   string | number
 >;
 export type SimilarTicket = Record<
-  "subject" | "status" | "priority" | "name",
+  "subject" | "status" | "priority" | "name" | "creation",
   string | number
 >;
 export interface RecentSimilarTicket {
@@ -650,12 +654,6 @@ export interface TicketActivities {
   views: ViewLog[];
 }
 
-export type APIOptions = DropdownOption[] | string[] | [];
-
-export type DropdownOption = {
-  label: string;
-  value: string | number;
-};
 
 export interface HDSettings {
   brandName: string;
@@ -703,6 +701,19 @@ export interface SavedReply {
   scope: string;
   teams: Team[];
   owner: string;
+}
+
+export type APIOptions = DropdownOption[] | string[] | [];
+
+export type DropdownOption = {
+  label: string;
+  value: string | number;
+};
+
+export interface AgentOption {
+  value: string;
+  label: string;
+  image?: string;
 }
 
 // symbols
@@ -758,5 +769,6 @@ declare global {
     time_format: string;
     session_user: string;
     timezone: Record<"user" | "system", string>;
+    agent: string | null;
   }
 }

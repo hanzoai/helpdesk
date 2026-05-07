@@ -1,11 +1,18 @@
 <template>
   <!-- View Controls -->
   <div
-    class="flex items-center justify-between gap-2 px-5 pb-4 pt-3 pl-6"
+    :class="[
+      'flex items-center justify-between gap-2 px-5 pb-4 pt-3 ',
+      list?.data?.data?.length > 0 ? 'relative' : 'absolute w-[stretch]',
+    ]"
     v-if="showViewControls"
   >
-    <QuickFilters v-if="!isMobileView" class="flex-1" />
-    <div class="flex items-start gap-2 justify-end h-full" v-if="!isMobileView">
+    <QuickFilters v-if="!isMobileView" />
+    <div v-if="!isMobileView" class="-ml-2 h-5 border-l"></div>
+    <div
+      class="flex items-start gap-2 justify-end h-full py-1 pl-0.5"
+      v-if="!isMobileView"
+    >
       <Button
         :label="__('Save Changes')"
         v-if="isViewUpdated && canSaveView"
@@ -102,16 +109,16 @@
   <!-- Loading State -->
   <div
     v-else-if="list.loading"
-    class="w-full h-full flex items-center justify-center -mt-48"
+    class="w-full h-full flex items-center justify-center -mt-14"
   >
-    <LoadingIndicator :scale="10" />
+    <LoadingIndicator :scale="8" />
   </div>
   <!-- Empty State -->
   <EmptyState
     v-else
     :title="emptyState.title"
     :icon="emptyState.icon"
-    @emptyStateAction="emit('emptyStateAction')"
+    :description="emptyState.description"
   />
 </template>
 
@@ -141,7 +148,6 @@ import { __ } from "@/translation";
 import {
   call,
   createResource,
-  dayjsLocal,
   Dropdown,
   FeatherIcon,
   ListFooter,
@@ -177,6 +183,7 @@ interface P {
       // type of a h componnt
       icon?: string | VNode;
       title: string;
+      description?: string;
     };
     hideViewControls?: boolean;
     hideColumnSetting?: boolean;
@@ -192,7 +199,6 @@ interface P {
 }
 
 interface E {
-  (event: "emptyStateAction"): void;
   (event: "rowClick", row: any): void;
 }
 const props = defineProps<P>();
@@ -233,8 +239,10 @@ const defaultOptions = reactive({
           ]),
           actions: [
             {
-              label: __("Confirm"),
+              label: __("Delete"),
               variant: "solid",
+              theme: "red",
+              iconLeft: "trash-2",
               onClick({ close }) {
                 handleBulkDelete(close, selections);
               },
@@ -253,7 +261,7 @@ function handleBulkDelete(hide: Function, selections: Set<string>) {
     items: JSON.stringify(Array.from(selections)),
     doctype: props.options.doctype,
   }).then(() => {
-    toast.success(__("Item(s) deleted successfully"));
+    toast.success(__("Item(s) deleted successfully."));
     hide();
     reset();
   });
@@ -469,8 +477,8 @@ function listCell(column: any, row: any, item: any, idx: number) {
   if (column.type === "MultipleAvatar") {
     return h(MultipleAvatar, {
       avatars: item,
-      hideName: true,
-      class: "flex items-center truncate flex-1 flex-row-reverse justify-end",
+      hideName: false,
+      class: "flex items-center flex-1 min-w-0",
     });
   }
   if (column.type === "Rating") {
@@ -511,7 +519,10 @@ function handleFieldClick(e: MouseEvent, column, row, item) {
     } else {
       item = item[0].name;
     }
-    applyFilters({ ...defaultParams.filters, [column.key]: ["LIKE", item] });
+    applyFilters({
+      ...defaultParams.filters,
+      [column.key]: ["LIKE", `%${item}%`],
+    });
     return;
   }
   applyFilters({ ...defaultParams.filters, [column.key]: item });
@@ -557,6 +568,9 @@ function applySort(order_by: string) {
   isViewUpdated.value = true;
   defaultParams.order_by = order_by;
   list.submit({ ...defaultParams, order_by });
+  if (!defaultParams.is_default) return;
+  handleViewUpdate();
+  isViewUpdated.value = false;
 }
 
 function updateColumns(obj) {
@@ -614,15 +628,45 @@ function handleViewUpdate() {
     route_name: route.name,
     is_customer_portal: options.value.isCustomerPortal,
   };
-  updateView(view, () => {
-    isViewUpdated.value = false;
-  });
+  const currentView = findView(route.query.view as string).value;
+  if (currentView && currentView.public) {
+    $dialog({
+      title: __("Confirm Changes"),
+      message: __(
+        "This view is public. Changes made will be visible to everyone."
+      ),
+      actions: [
+        {
+          label: __("Save"),
+          variant: "solid",
+          onClick({ close }) {
+            updateView(view, () => {
+              isViewUpdated.value = false;
+            });
+            close();
+          },
+        },
+        {
+          label: __("Cancel"),
+          variant: "outline",
+          onClick({ close }) {
+            close();
+          },
+        },
+      ],
+    });
+  } else {
+    updateView(view, () => {
+      isViewUpdated.value = false;
+    });
+  }
 }
 
 const { findView, updateView, defaultView } = useView(options.value.doctype);
 
 const canSaveView = computed(() => {
   let currentView: View = findView(route.query.view as string).value;
+  if (currentView?.is_standard) return false;
   if (!currentView || !currentView.public) return true;
   if (currentView.public && isManager) {
     return true;
@@ -646,6 +690,20 @@ function handleViewChanges() {
   defaultParams.order_by = currentView.order_by || "modified desc";
   defaultParams.columns = currentView.columns;
   defaultParams.rows = currentView.rows;
+
+  if (route.query.filters) {
+    try {
+      const parsedFilters = JSON.parse(route.query.filters as string);
+      if (Object.keys(parsedFilters).length > 0) {
+        defaultParams.filters = {
+          ...defaultParams.filters,
+          ...parsedFilters,
+        };
+      }
+    } catch (e) {
+      console.error("Failed to parse filters from URL", e);
+    }
+  }
 
   list.submit({ ...defaultParams });
 }
