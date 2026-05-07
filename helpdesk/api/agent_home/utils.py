@@ -10,13 +10,13 @@ def get_default_agent_dashboard():
 def calculate_percentage_change(current_value: float, previous_value: float) -> float:
     """
     Calculate the percentage change between two values.
-    Returns 999 when there's no previous value but there is a current value.
+    Returns None when there's no previous value but there is a current value.
     Returns 0 when both values are zero.
     """
     if previous_value > 0:
         return round(((current_value - previous_value) / previous_value) * 100, 2)
     elif current_value > 0:
-        return 999
+        return None
     return 0
 
 
