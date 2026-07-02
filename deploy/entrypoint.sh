@@ -17,14 +17,17 @@ redis-server --daemonize yes --port 6379 --save "" --appendonly no
 # 2) Assets are CODE, not data: restore the built sites/ scaffold on top of the
 #    (data-only) volume mounted at $BENCH_DIR/sites.
 mkdir -p sites
+# cp -dR (not -a): preserve symlinks + recurse WITHOUT --preserve=all, which
+# would utime the volume mount root (root-owned; fsGroup grants write, not
+# ownership) and fail with EPERM.
 if [ ! -f sites/apps.txt ]; then
   echo "[entrypoint] fresh volume -> seeding sites/ from image template"
-  cp -a /home/frappe/sites-template/. sites/
+  cp -dR /home/frappe/sites-template/. sites/
 else
   echo "[entrypoint] existing volume -> refreshing code assets from image template"
   rm -rf sites/assets
-  cp -a /home/frappe/sites-template/assets sites/assets
-  cp -a /home/frappe/sites-template/apps.txt sites/apps.txt
+  cp -dR /home/frappe/sites-template/assets sites/assets
+  cp -f /home/frappe/sites-template/apps.txt sites/apps.txt
 fi
 
 # 3) Common (cross-site) config: redis + socketio.
