@@ -22,12 +22,18 @@ ENV DEBIAN_FRONTEND=noninteractive \
 # Frappe system dependencies. SQLite is stdlib in CPython, so no DB client.
 # wkhtmltopdf for PDF/print, redis-server for cache/queue/socketio (in-pod),
 # node for the frappe-ui / helpdesk SPA asset build.
+ARG WKHTMLTOX_DEB=https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.bookworm_amd64.deb
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      git curl ca-certificates build-essential pkg-config \
+      git curl wget ca-certificates build-essential pkg-config \
       redis-server \
       libffi-dev libssl-dev \
-      wkhtmltopdf fonts-cantarell xfonts-75dpi xfonts-base \
+      fontconfig libjpeg62-turbo libxrender1 libxext6 xfonts-75dpi xfonts-base \
+      fonts-cantarell \
       gettext \
+    # wkhtmltopdf (patched-Qt static build; the apt package was dropped in trixie)
+    && wget -q -O /tmp/wkhtmltox.deb "${WKHTMLTOX_DEB}" \
+    && apt-get install -y --no-install-recommends /tmp/wkhtmltox.deb \
+    && rm -f /tmp/wkhtmltox.deb \
     && curl -fsSL https://deb.nodesource.com/setup_${NODE_MAJOR}.x | bash - \
     && apt-get install -y --no-install-recommends nodejs \
     && npm install -g yarn \
