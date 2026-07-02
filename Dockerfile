@@ -67,7 +67,7 @@ RUN bench get-app --skip-assets https://github.com/frappe/telephony
 # wants a git remote (local-path parsing is broken in this bench), so pin the
 # branch being built.
 ARG HELPDESK_REPO=https://github.com/hanzoai/helpdesk
-ARG HELPDESK_BRANCH=blue/hanzo-deploy
+ARG HELPDESK_BRANCH=develop
 RUN bench get-app helpdesk ${HELPDESK_REPO} --branch ${HELPDESK_BRANCH}
 
 # Build all frontend assets (frappe desk + helpdesk SPA).
