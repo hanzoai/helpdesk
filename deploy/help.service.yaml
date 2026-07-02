@@ -11,7 +11,7 @@ spec:
   partOf: platform
   image:
     repository: ghcr.io/hanzoai/helpdesk
-    tag: 1.26.2            # semver; pinned by universe, never a floating tag
+    tag: 1.26.4            # semver; pinned by universe, never a floating tag
     pullPolicy: Always
   imagePullSecrets:
     - name: ghcr-secret
@@ -21,7 +21,9 @@ spec:
   env:
     - name: SITE_NAME
       value: help.hanzo.ai
-    - name: HANZO_ORG        # org == tenant (IAM owner)
+    - name: HANZO_ORG        # primary org == tenant (IAM owner)
+      value: hanzo
+    - name: HANZO_ORGS       # comma-separated org slugs -> one SQLite site each
       value: hanzo
     - name: IAM_BASE_URL
       value: https://hanzo.id
@@ -38,8 +40,9 @@ spec:
     - name: IAM_CLIENT_ID
       valueFrom:
         secretKeyRef: { name: help-secrets, key: IAM_CLIENT_ID }
-    # IAM_CLIENT_SECRET added once the hanzo-helpdesk IAM app is seeded
-    # (init_data.json). hanzo_sso.setup skips gracefully until then.
+    - name: IAM_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef: { name: help-secrets, key: IAM_CLIENT_SECRET }
   ports:
     - name: http
       containerPort: 8000
