@@ -11,7 +11,7 @@ spec:
   partOf: platform
   image:
     repository: ghcr.io/hanzoai/helpdesk
-    tag: 1.26.5            # semver; pinned by universe, never a floating tag
+    tag: 1.26.6            # semver; pinned by universe, never a floating tag
     pullPolicy: Always
   imagePullSecrets:
     - name: ghcr-secret

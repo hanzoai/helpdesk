@@ -60,6 +60,10 @@ def _setup_social_login():
         "social_login_provider": "Custom",
         "provider_name": PROVIDER,
         "enable_social_login": 1,
+        # custom_base_url=1 makes Frappe prepend base_url to authorize/token/
+        # userinfo paths; without it the relative paths resolve to the Frappe
+        # host and the OAuth redirect breaks.
+        "custom_base_url": 1,
         "base_url": base_url,
         "redirect_url": redirect_url,
         "client_id": client_id,
@@ -97,6 +101,10 @@ def _harden_login():
     # a no-op (never an error) on versions without the field.
     if _set_single_if_field("System Settings", "disable_user_pass_login", 1):
         changed.append("System Settings.disable_user_pass_login=1")
+    # Disable Frappe's native passwordless email-link login — it is a second
+    # (non-IAM) identity path. IAM SSO is the ONLY way in.
+    if _set_single_if_field("System Settings", "login_with_email_link", 0):
+        changed.append("System Settings.login_with_email_link=0")
     frappe.db.commit()
     print(f"hanzo_sso: hardened login -> {', '.join(changed) or 'no fields present'}")
 
