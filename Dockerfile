@@ -25,6 +25,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 ARG WKHTMLTOX_DEB=https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.bookworm_amd64.deb
 RUN apt-get update && apt-get install -y --no-install-recommends \
       git curl wget ca-certificates build-essential pkg-config \
+      cron \
       redis-server \
       libffi-dev libssl-dev \
       # C-extension build headers for frappe's pinned deps (mysqlclient, psycopg2,
