@@ -1,0 +1,73 @@
+# Hanzo Help Center — operator-native Service CR (hanzo.ai/v1).
+# Authoritative copy lives in hanzoai/universe; this is the source-side mirror.
+# Deploy: kubectl -n hanzo apply -f help.service.yaml  (operator reconciles it).
+apiVersion: hanzo.ai/v1
+kind: Service
+metadata:
+  name: help
+  namespace: hanzo
+spec:
+  component: help
+  partOf: platform
+  image:
+    repository: ghcr.io/hanzoai/helpdesk
+    tag: 1.26.2            # semver; pinned by universe, never a floating tag
+    pullPolicy: Always
+  imagePullSecrets:
+    - name: ghcr-secret
+  replicas: 1
+  strategy: Recreate        # SQLite = single writer
+  fsGroup: 1000
+  env:
+    - name: SITE_NAME
+      value: help.hanzo.ai
+    - name: HANZO_ORG        # org == tenant (IAM owner)
+      value: hanzo
+    - name: IAM_BASE_URL
+      value: https://hanzo.id
+    - name: HANZO_IAM_ISSUER
+      value: https://hanzo.id
+    - name: HANZO_IAM_JWKS_URI
+      value: https://hanzo.id/v1/iam/.well-known/jwks
+    - name: ADMIN_PASSWORD
+      valueFrom:
+        secretKeyRef: { name: help-secrets, key: ADMIN_PASSWORD }
+    - name: ENCRYPTION_KEY
+      valueFrom:
+        secretKeyRef: { name: help-secrets, key: ENCRYPTION_KEY }
+    - name: IAM_CLIENT_ID
+      valueFrom:
+        secretKeyRef: { name: help-secrets, key: IAM_CLIENT_ID }
+    # IAM_CLIENT_SECRET added once the hanzo-helpdesk IAM app is seeded
+    # (init_data.json). hanzo_sso.setup skips gracefully until then.
+  ports:
+    - name: http
+      containerPort: 8000
+      servicePort: 80
+  livenessProbe:
+    path: /api/method/ping
+    port: 8000
+    initialDelaySeconds: 180
+    periodSeconds: 30
+  readinessProbe:
+    path: /api/method/ping
+    port: 8000
+    initialDelaySeconds: 90
+    periodSeconds: 15
+  resources:
+    requests: { cpu: 250m, memory: 512Mi }
+    limits:   { cpu: "1",  memory: 2Gi }
+  pdb:
+    enabled: true
+    maxUnavailable: 1
+  ingress:
+    enabled: false           # ingress managed separately (help.ingress.yaml)
+    hosts: [help.hanzo.ai]
+    tls: true
+  volumeMounts:
+    - name: app-db
+      mountPath: /home/frappe/frappe-bench/sites
+  volumes:
+    - name: app-db
+      persistentVolumeClaim:
+        claimName: help-app-db
