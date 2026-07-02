@@ -1,0 +1,37 @@
+# Hanzo Help Center ingress — help.hanzo.ai (hanzoai/ingress, cert-manager TLS).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: help
+  namespace: hanzo
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: ingress
+spec:
+  ingressClassName: ingress
+  rules:
+    - host: help.hanzo.ai
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: help
+                port:
+                  number: 80
+  tls:
+    - hosts: [help.hanzo.ai]
+      secretName: help-tls
+---
+# PVC for the per-org SQLite site data (assets are restored from the image).
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: help-app-db
+  namespace: hanzo
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 10Gi
