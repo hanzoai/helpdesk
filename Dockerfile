@@ -27,6 +27,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       git curl wget ca-certificates build-essential pkg-config \
       redis-server \
       libffi-dev libssl-dev \
+      # C-extension build headers for frappe's pinned deps (mysqlclient, psycopg2,
+      # python-ldap, lxml, pillow) — compiled from source on Python 3.14.
+      default-libmysqlclient-dev libpq-dev libldap2-dev libsasl2-dev \
+      libxml2-dev libxslt1-dev libjpeg-dev zlib1g-dev libcups2-dev \
       fontconfig libjpeg62-turbo libxrender1 libxext6 xfonts-75dpi xfonts-base \
       fonts-cantarell \
       gettext \
