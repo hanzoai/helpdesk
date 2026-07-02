@@ -15,7 +15,7 @@ FROM python:${PYTHON_VERSION}-slim-trixie AS build
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
-    NODE_MAJOR=20 \
+    NODE_MAJOR=24 \
     BENCH_DIR=/home/frappe/frappe-bench \
     PATH=/home/frappe/.local/bin:$PATH
 
