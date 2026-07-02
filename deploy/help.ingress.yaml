@@ -8,7 +8,6 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     kubernetes.io/ingress.class: ingress
 spec:
-  ingressClassName: ingress
   rules:
     - host: help.hanzo.ai
       http:

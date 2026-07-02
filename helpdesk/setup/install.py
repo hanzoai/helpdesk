@@ -425,6 +425,10 @@ def add_default_agent_status():
 
 
 def add_fts_index():
+    # MariaDB FULLTEXT only. SQLite (and Postgres) use their own search backend
+    # (see helpdesk/search_sqlite.py, HelpdeskSearch FTS5), so skip there.
+    if frappe.db.db_type != "mariadb":
+        return
     indexes = [
         {"table": "tabHD Ticket", "column": "subject", "index_name": "ft_subject"},
         {
