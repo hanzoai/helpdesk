@@ -32,8 +32,12 @@ USERINFO_URL = "/v1/iam/oauth/userinfo"
 
 
 def setup():
-    _setup_social_login()
-    _harden_login()
+    # Hardening must apply even if social-login provisioning fails, so a broken
+    # provider config can never silently leave native signup open.
+    try:
+        _setup_social_login()
+    finally:
+        _harden_login()
 
 
 def _setup_social_login():
@@ -45,11 +49,19 @@ def _setup_social_login():
         print("hanzo_sso: IAM_CLIENT_ID / IAM_CLIENT_SECRET not set; skipping")
         return
 
+    # Frappe validates that a Custom provider has a Redirect URL. Derive it from
+    # the site's own URL so it is correct per-org (each org's SQLite site sets
+    # its own host_name): https://<site>/api/method/.../custom/hanzo
+    redirect_url = frappe.utils.get_url(
+        f"/api/method/frappe.integrations.oauth2_logins.custom/{PROVIDER}"
+    )
+
     values = {
         "social_login_provider": "Custom",
         "provider_name": PROVIDER,
         "enable_social_login": 1,
         "base_url": base_url,
+        "redirect_url": redirect_url,
         "client_id": client_id,
         "client_secret": client_secret,
         "authorize_url": AUTHORIZE_URL,
