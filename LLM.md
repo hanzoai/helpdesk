@@ -25,12 +25,22 @@ is reused; only the app layer swaps.
 (Hanzo Base/SQLite). No MariaDB / Postgres / external DB.
 
 ## IAM SSO
-IAM application: `hanzo-helpdesk` (org `hanzo`) on hanzo.id.
+IAM application: `hanzo-helpdesk` on hanzo.id. `IAM_CLIENT_ID=hanzo-helpdesk`.
 OAuth2 redirect URI to register:
 `https://help.hanzo.ai/api/method/frappe.integrations.oauth2_logins.custom/hanzo`
-Endpoints (Casdoor-mapped): authorize `/v1/iam/login/oauth/authorize`,
-token `/v1/iam/login/oauth/access_token`, userinfo `/v1/iam/userinfo`,
-jwks `/v1/iam/.well-known/jwks`.
+Endpoints (authoritative — from hanzo.id `/.well-known/openid-configuration`):
+authorize `/v1/iam/oauth/authorize`, token `/v1/iam/oauth/token`,
+userinfo `/v1/iam/oauth/userinfo`, jwks `/v1/iam/.well-known/jwks`.
+`hanzo_sso.setup` also DISABLES native signup (Website Settings `disable_signup`)
+and forces SSO-only login (System Settings `disable_user_pass_login`, v15+),
+so IAM is the ONE identity authority — no second signup path.
+
+## Multi-tenant isolation (org == tenant)
+One SQLite site (== one DB) per org, resolved by the Host header:
+primary org (`HANZO_ORG`) -> `SITE_NAME` (help.hanzo.ai); any other org
+`<org>` -> `<org>.<SITE_NAME>`. Provision list = `HANZO_ORGS` (comma-separated).
+Isolation is structural: org A's tickets live in a different SQLite file than
+org B's, so A's tickets are never visible to B.
 
 ## Build & deploy (one lifecycle)
 1. arcd BuildKit Job -> `ghcr.io/hanzoai/helpdesk:<semver>` (context =
