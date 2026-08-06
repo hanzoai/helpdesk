@@ -1,0 +1,15 @@
+# Frappe Helpdesk. The shippable artifact is the SPA in desk/ — a Vite build of
+# the Vue app that the frappe app serves. That build is the gate: it fails on a
+# type error, a missing import, or a broken component, which is every way this
+# repo's own code breaks.
+#
+# No `images:` here on purpose. .hanzo/workflows/deploy.yml already builds and
+# pushes ghcr.io/hanzoai/helpdesk from this same Dockerfile on this same fleet,
+# on the same push to develop; declaring the image here too would build the
+# whole frappe bench twice per commit.
+#
+# The python side is not gated: frappe's suite needs a provisioned bench with a
+# live site, which is the image's job, not a runner's.
+test:
+  - name: build
+    run: cd desk && yarn install --frozen-lockfile && yarn build
