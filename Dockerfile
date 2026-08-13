@@ -51,12 +51,19 @@ WORKDIR /home/frappe
 # frappe-bench CLI
 RUN pip install --user frappe-bench
 
+# Both Hanzo repos are read from the forge — it is where they live, and it does
+# not move out from under the build the way the GitHub org did. The forge serves
+# nothing anonymously, so git answers its credential prompt from the token the
+# build mounts. Public remotes never reach the helper: git only asks when the
+# server challenges it.
+RUN git config --global credential.helper \
+      '!f(){ test "$1" = get && printf "username=oauth2\npassword=%s\n" "$(cat /run/secrets/forge)"; :; };f'
+
 # Initialise a bench against the Hanzo Frappe core (carries the SQLite driver).
-# Both Hanzo repos are read from the forge: it is where they live, it serves
-# them anonymously, and it does not move out from under the build.
 ARG FRAPPE_REPO=https://git.hanzo.ai/hanzoai/frappe
 ARG FRAPPE_BRANCH=develop
-RUN bench init --skip-redis-config-generation --verbose \
+RUN --mount=type=secret,id=forge,uid=1000,required=true \
+    bench init --skip-redis-config-generation --verbose \
       --frappe-path ${FRAPPE_REPO} --frappe-branch ${FRAPPE_BRANCH} \
       frappe-bench
 
@@ -70,7 +77,8 @@ RUN bench get-app --skip-assets https://github.com/frappe/telephony
 # branch being built.
 ARG HELPDESK_REPO=https://git.hanzo.ai/hanzoai/helpdesk
 ARG HELPDESK_BRANCH=develop
-RUN bench get-app helpdesk ${HELPDESK_REPO} --branch ${HELPDESK_BRANCH}
+RUN --mount=type=secret,id=forge,uid=1000,required=true \
+    bench get-app helpdesk ${HELPDESK_REPO} --branch ${HELPDESK_BRANCH}
 
 # Build all frontend assets (frappe desk + helpdesk SPA).
 RUN bench build --production

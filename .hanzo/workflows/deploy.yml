@@ -60,6 +60,10 @@ jobs:
           push: true
           provenance: false
           tags: ghcr.io/hanzoai/helpdesk:${{ steps.meta.outputs.tag }}
+          # bench clones the Frappe core and this app from the forge, which
+          # serves nothing anonymously. The run's own token is the credential.
+          secrets: |
+            forge=${{ secrets.GITHUB_TOKEN }}
 
       # build-push-action can exit 0 before the manifest resolves, so a green run
       # could still mean a future ImagePullBackOff. Prove it pulls.
