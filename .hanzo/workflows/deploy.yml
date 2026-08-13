@@ -60,8 +60,6 @@ jobs:
           push: true
           provenance: false
           tags: ghcr.io/hanzoai/helpdesk:${{ steps.meta.outputs.tag }}
-          secrets: |
-            GIT_AUTH_TOKEN=${{ secrets.GH_PAT }}
 
       # build-push-action can exit 0 before the manifest resolves, so a green run
       # could still mean a future ImagePullBackOff. Prove it pulls.

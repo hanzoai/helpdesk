@@ -52,7 +52,9 @@ WORKDIR /home/frappe
 RUN pip install --user frappe-bench
 
 # Initialise a bench against the Hanzo Frappe core (carries the SQLite driver).
-ARG FRAPPE_REPO=https://github.com/hanzoai/frappe
+# Both Hanzo repos are read from the forge: it is where they live, it serves
+# them anonymously, and it does not move out from under the build.
+ARG FRAPPE_REPO=https://git.hanzo.ai/hanzoai/frappe
 ARG FRAPPE_BRANCH=develop
 RUN bench init --skip-redis-config-generation --verbose \
       --frappe-path ${FRAPPE_REPO} --frappe-branch ${FRAPPE_BRANCH} \
@@ -66,7 +68,7 @@ RUN bench get-app --skip-assets https://github.com/frappe/telephony
 # helpdesk itself, from the hanzoai/helpdesk fork (this repo). bench get-app
 # wants a git remote (local-path parsing is broken in this bench), so pin the
 # branch being built.
-ARG HELPDESK_REPO=https://github.com/hanzoai/helpdesk
+ARG HELPDESK_REPO=https://git.hanzo.ai/hanzoai/helpdesk
 ARG HELPDESK_BRANCH=develop
 RUN bench get-app helpdesk ${HELPDESK_REPO} --branch ${HELPDESK_BRANCH}
 
