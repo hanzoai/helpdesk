@@ -75,6 +75,11 @@ provision_site() {
   # IAM SSO + login hardening (idempotent, secrets from env / KMS-backed).
   bench --site "${site}" execute helpdesk.hanzo_sso.setup \
     || echo "[entrypoint] SSO provisioning skipped/failed for ${site} (non-fatal)"
+  # Brand the pages Frappe renders itself — login, navbar, footer, favicon.
+  # Each field is set to a constant, so this restores the brand on every boot
+  # of a site that already exists just as it sets it on a new one.
+  bench --site "${site}" execute helpdesk.brand.setup \
+    || echo "[entrypoint] brand provisioning skipped/failed for ${site} (non-fatal)"
 }
 
 IFS=',' read -ra _orgs <<< "$HANZO_ORGS"

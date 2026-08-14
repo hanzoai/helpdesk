@@ -9,7 +9,7 @@ Hey {{ first_name }} 👋,
 <br><br>
 We thought we'd use this space to give you a quick walkthrough while you're here. 🙂
 <br><br>
-This is a sample ticket we created to show you how Frappe Helpdesk works.
+This is a sample ticket we created to show you how the Hanzo Help Center works.
 <br><br>
 Getting started is easy. In the main <b>Ticket activity area</b>, when you reply to a ticket your response shows up directly below in the activity thread. This way you can keep track of all your ticket activities in one single place. ✨
 <br>
@@ -38,15 +38,12 @@ What you can do next:<br>
   <li>Invite your team and auto-assign tickets using assignment rules.</li>
   <li>Set up SLAs to manage response times for your agents.</li>
   <li>Add a Knowledge Base for self-serve support.</li>
-  <li>Check out our documentation at <a href="https://docs.frappe.io/helpdesk" style="color: #3b82f6;">https://docs.frappe.io/helpdesk</a> </li>
 </ul>
 <br>
-Feel free to click around and explore our product.
-<br><br>
-If you need help, reach out to us here: <a href="https://support.frappe.io/helpdesk" style="color: #3b82f6;">https://support.frappe.io/helpdesk</a>
+Feel free to click around and explore.
 <br><br>
 Cheers,<br>
-Team Frappe
+Team Hanzo
 </div>
 """
 

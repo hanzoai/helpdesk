@@ -55,8 +55,8 @@ export default defineConfig(async ({ mode }) => {
         },
         manifest: {
           display: "standalone",
-          name: "Frappe Helpdesk",
-          short_name: "Helpdesk",
+          name: "Hanzo Help Center",
+          short_name: "Help Center",
           start_url: "/helpdesk",
           description:
             "Modern, Streamlined, Free and Open Source Customer Service Software",
