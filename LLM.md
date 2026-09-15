@@ -12,8 +12,10 @@ is reused; only the app layer swaps.
   snapshots the built `sites/` tree as an image template (assets = code).
 - `deploy/entrypoint.sh` — starts in-pod redis (cache/queue/socketio), restores
   code assets over the data-only volume, creates a **per-org SQLite site**
-  (`org == tenant`), wires IAM SSO, and serves via `bench serve` (no nginx —
-  hanzoai/ingress terminates TLS + routes the host).
+  (`org == tenant`), wires IAM SSO, and serves the Frappe WSGI app under
+  gunicorn with `/assets` and `/files` in process (no nginx — hanzoai/ingress
+  terminates TLS + routes the host). The Werkzeug development server, with its
+  debugger and reloader, is not in the request path.
 - `helpdesk/hanzo_sso.py` — idempotently provisions a Frappe *Social Login Key*
   for **hanzo.id** OAuth2. Client credentials come from env (KMS-backed k8s
   secret `help-secrets`), never hardcoded.
