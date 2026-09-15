@@ -88,6 +88,10 @@ RUN --mount=type=bind,target=/tmp/context \
     && bench get-app file:///tmp/apps/helpdesk \
     && rm -rf /tmp/apps
 
+# helpdesk's search reads NLTK corpora, and its after_migrate hook downloads any
+# that are missing. The image carries them, so a boot makes no download.
+RUN env/bin/python -c "import nltk; [nltk.download(c, quiet=True, raise_on_error=True) for c in ('averaged_perceptron_tagger_eng', 'punkt_tab', 'brown')]"
+
 # Build all frontend assets (frappe desk + helpdesk SPA).
 RUN bench build --production
 
