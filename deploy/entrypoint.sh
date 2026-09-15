@@ -88,13 +88,17 @@ for _org in "${_orgs[@]}"; do
   [ -n "$_org" ] && provision_site "$_org"
 done
 
-# Primary org is the default site for bare/unknown hosts.
+# Primary org is the default site for bench commands that name no site.
 bench use "$(site_for_org "$HANZO_ORG")"
 
-# 5) Serve. bench serve (werkzeug) serves /assets, /files, /api and proxies
-#    /socket.io. Background worker + scheduler + socketio for full function.
+# 5) Serve. gunicorn runs the Frappe WSGI app the way frappe_docker does, with
+#    /assets and /files served in process (frappe.app.application_with_statics).
+#    Frappe picks the site from the Host header. Worker, scheduler and socketio
+#    run beside it.
 echo "[entrypoint] worker + scheduler + socketio + web(:8000) starting"
 nohup bench worker --queue default,short,long >/tmp/worker.log 2>&1 &
 nohup node apps/frappe/socketio.js            >/tmp/socketio.log 2>&1 &
 nohup bench schedule                          >/tmp/schedule.log 2>&1 &
-exec bench serve --port 8000
+exec env/bin/gunicorn --chdir sites --bind 0.0.0.0:8000 \
+  --workers 2 --threads 4 --worker-class gthread --worker-tmp-dir /dev/shm \
+  --timeout 120 --preload 'frappe.app:application_with_statics()'
