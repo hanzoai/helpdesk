@@ -48,37 +48,45 @@ RUN useradd -ms /bin/bash frappe
 USER frappe
 WORKDIR /home/frappe
 
-# frappe-bench CLI
-RUN pip install --user frappe-bench
+# frappe-bench CLI, pinned: bench's file:// handling below is this version's.
+RUN pip install --user frappe-bench==5.31.0
 
-# Both Hanzo repos are read from the forge — it is where they live, and it does
-# not move out from under the build the way the GitHub org did. The forge serves
-# nothing anonymously, so git answers its credential prompt from the token the
-# build mounts. Public remotes never reach the helper: git only asks when the
-# server challenges it.
-RUN git config --global credential.helper \
-      '!f(){ test "$1" = get && printf "username=oauth2\npassword=%s\n" "$(cat /run/secrets/forge)"; :; };f'
-
-# Initialise a bench against the Hanzo Frappe core (carries the SQLite driver).
-ARG FRAPPE_REPO=https://git.hanzo.ai/hanzoai/frappe
-ARG FRAPPE_BRANCH=develop
-RUN --mount=type=secret,id=forge,uid=1000,required=true \
-    bench init --skip-redis-config-generation --verbose \
-      --frappe-path ${FRAPPE_REPO} --frappe-branch ${FRAPPE_BRANCH} \
-      frappe-bench
+# Every app enters the bench as a local git repository at one commit. bench clones
+# a file:// URL like any remote, and reads a bare local path as an app already in
+# apps/. The Frappe core (hanzoai/frappe, which carries the SQLite driver) and
+# telephony are pinned by commit; helpdesk is this build context.
+ARG FRAPPE_REPO=https://github.com/hanzoai/frappe
+ARG FRAPPE_COMMIT=56736629baf1c3782a6d08193513c8940744e191
+RUN git init -q /tmp/apps/frappe \
+    && git -C /tmp/apps/frappe fetch -q --depth 1 "${FRAPPE_REPO}" "${FRAPPE_COMMIT}" \
+    && git -C /tmp/apps/frappe checkout -q -B develop FETCH_HEAD \
+    && bench init --skip-redis-config-generation --verbose \
+      --frappe-path file:///tmp/apps/frappe frappe-bench \
+    && rm -rf /tmp/apps
 
 WORKDIR ${BENCH_DIR}
 
 # telephony is a hard frappe-dependency of helpdesk (pyproject).
-RUN bench get-app --skip-assets https://github.com/frappe/telephony
+ARG TELEPHONY_REPO=https://github.com/frappe/telephony
+ARG TELEPHONY_COMMIT=c213488a87c21b25475f1110526e80486412b7ff
+RUN git init -q /tmp/apps/telephony \
+    && git -C /tmp/apps/telephony fetch -q --depth 1 "${TELEPHONY_REPO}" "${TELEPHONY_COMMIT}" \
+    && git -C /tmp/apps/telephony checkout -q -B develop FETCH_HEAD \
+    && bench get-app --skip-assets file:///tmp/apps/telephony \
+    && rm -rf /tmp/apps
 
-# helpdesk itself, from the hanzoai/helpdesk fork (this repo). bench get-app
-# wants a git remote (local-path parsing is broken in this bench), so pin the
-# branch being built.
-ARG HELPDESK_REPO=https://git.hanzo.ai/hanzoai/helpdesk
-ARG HELPDESK_BRANCH=develop
-RUN --mount=type=secret,id=forge,uid=1000,required=true \
-    bench get-app helpdesk ${HELPDESK_REPO} --branch ${HELPDESK_BRANCH}
+# helpdesk itself: the build context, committed into a local repository. The
+# frappe-ui submodule is a development checkout; the desk build reads the npm
+# package.
+RUN --mount=type=bind,target=/tmp/context \
+    mkdir -p /tmp/apps \
+    && cp -R /tmp/context /tmp/apps/helpdesk \
+    && rm -rf /tmp/apps/helpdesk/frappe-ui \
+    && git -C /tmp/apps/helpdesk init -q -b develop \
+    && git -C /tmp/apps/helpdesk add -A \
+    && git -C /tmp/apps/helpdesk -c user.name=hanzo -c user.email=dev@hanzo.ai commit -qm helpdesk \
+    && bench get-app file:///tmp/apps/helpdesk \
+    && rm -rf /tmp/apps
 
 # Build all frontend assets (frappe desk + helpdesk SPA).
 RUN bench build --production
