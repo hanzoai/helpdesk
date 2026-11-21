@@ -3,6 +3,8 @@
 <img src=".github/hd-logo.svg" alt="Frappe Helpdesk logo" width="80"/>
 <h1>Frappe Helpdesk</h1>
 
+[![Open in Hanzo](https://hanzo.app/badges/open-in-hanzo.svg)](https://hanzo.app/dev/open?repo=github.com/hanzoai/helpdesk&ref=develop&action=open) [![Edit with Hanzo](https://hanzo.app/badges/edit-with-hanzo.svg)](https://hanzo.app/dev/open?repo=github.com/hanzoai/helpdesk&ref=develop&action=edit) [![Deploy with Hanzo](https://hanzo.app/badges/deploy-with-hanzo.svg)](https://hanzo.app/dev/open?repo=github.com/hanzoai/helpdesk&ref=develop&action=deploy)
+
 **Customer Service, Made Simple and Effective**
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/frappe/helpdesk)
